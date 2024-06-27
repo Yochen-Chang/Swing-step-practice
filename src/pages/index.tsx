@@ -191,7 +191,8 @@ const Step = styled.div`
 const Table = styled.table`
   margin: 20px auto;
   border-collapse: collapse;
-  width: 50%;
+  width: 80%;
+  max-width: 400px;
 `;
 
 const Th = styled.th`
