@@ -2,110 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { supabase } from "../supabase";
 
-const IndexPage = () => {
-  const [count, setCount] = useState(0);
-  const [unique, setUnique] = useState(false);
-  const [steps, setSteps] = useState([]);
-  const [selectedSteps, setSelectedSteps] = useState([]);
-  const [jazzSteps, setJazzSteps] = useState([]);
-
-  useEffect(() => {
-    const fetchSteps = async () => {
-      const { data, error } = await supabase.from("swing-steps").select("*");
-      if (error) {
-        console.error("Error fetching data from Supabase:", error);
-      } else {
-        setJazzSteps(data.map((step) => step.name));
-      }
-    };
-    fetchSteps();
-  }, []);
-
-  const handleGenerate = () => {
-    let newSteps;
-    if (unique) {
-      if (count > jazzSteps.length) {
-        alert("Number of steps requested exceeds available unique steps.");
-        return;
-      }
-      newSteps = [...jazzSteps].sort(() => 0.5 - Math.random()).slice(0, count);
-    } else {
-      newSteps = Array.from({ length: count }, () => {
-        const randomIndex = Math.floor(Math.random() * jazzSteps.length);
-        return jazzSteps[randomIndex];
-      });
-    }
-    setSteps(newSteps);
-    setSelectedSteps(newSteps);
-  };
-
-  const incrementCount = () => {
-    if (unique && count >= jazzSteps.length) {
-      alert(`Maximum number of unique steps is ${jazzSteps.length}`);
-      return;
-    }
-    setCount(count + 1);
-  };
-
-  const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
-
-  const handleCheckboxChange = (e) => {
-    setUnique(e.target.checked);
-    if (e.target.checked && count > jazzSteps.length) {
-      setCount(jazzSteps.length);
-    }
-  };
-
-  return (
-    <Container>
-      <h1>Swing Solo Jazz Step Generator</h1>
-      <CheckboxContainer>
-        <label>
-          <input
-            type="checkbox"
-            checked={unique}
-            onChange={handleCheckboxChange}
-          />
-          Unique Steps
-        </label>
-      </CheckboxContainer>
-      <InputContainer>
-        <SmallButton onClick={decrementCount}>-</SmallButton>
-        <Input
-          type="number"
-          value={count}
-          onChange={(e) => setCount(Number(e.target.value))}
-          placeholder="Enter number of steps"
-          max={unique ? jazzSteps.length : undefined}
-        />
-        <SmallButton onClick={incrementCount}>+</SmallButton>
-      </InputContainer>
-      <Button onClick={handleGenerate}>Generate Steps</Button>
-      <StepsContainer>
-        {steps.map((step, index) => (
-          <Step key={index}>{step}</Step>
-        ))}
-      </StepsContainer>
-      <Table>
-        <thead>
-          <tr>
-            <Th>#</Th>
-            <Th>SOLO Step</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {jazzSteps.map((step, index) => (
-            <TableRow key={index} selected={selectedSteps.includes(step)}>
-              <Td>{index + 1}</Td>
-              <Td>{step}</Td>
-            </TableRow>
-          ))}
-        </tbody>
-      </Table>
-    </Container>
-  );
-};
-
 const Container = styled.div`
   text-align: center;
   padding: 20px;
@@ -210,5 +106,109 @@ const Td = styled.td`
 const TableRow = styled.tr`
   background-color: ${(props) => (props.selected ? "#f0e68c" : "white")};
 `;
+
+const IndexPage = () => {
+  const [count, setCount] = useState(0);
+  const [unique, setUnique] = useState(false);
+  const [steps, setSteps] = useState([]);
+  const [selectedSteps, setSelectedSteps] = useState([]);
+  const [jazzSteps, setJazzSteps] = useState([]);
+
+  useEffect(() => {
+    const fetchSteps = async () => {
+      const { data, error } = await supabase.from("swing-steps").select("*");
+      if (error) {
+        console.error("Error fetching data from Supabase:", error);
+      } else {
+        setJazzSteps(data.map((step) => step.name));
+      }
+    };
+    fetchSteps();
+  }, []);
+
+  const handleGenerate = () => {
+    let newSteps;
+    if (unique) {
+      if (count > jazzSteps.length) {
+        alert("Number of steps requested exceeds available unique steps.");
+        return;
+      }
+      newSteps = [...jazzSteps].sort(() => 0.5 - Math.random()).slice(0, count);
+    } else {
+      newSteps = Array.from({ length: count }, () => {
+        const randomIndex = Math.floor(Math.random() * jazzSteps.length);
+        return jazzSteps[randomIndex];
+      });
+    }
+    setSteps(newSteps);
+    setSelectedSteps(newSteps);
+  };
+
+  const incrementCount = () => {
+    if (unique && count >= jazzSteps.length) {
+      alert(`Maximum number of unique steps is ${jazzSteps.length}`);
+      return;
+    }
+    setCount(count + 1);
+  };
+
+  const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
+
+  const handleCheckboxChange = (e) => {
+    setUnique(e.target.checked);
+    if (e.target.checked && count > jazzSteps.length) {
+      setCount(jazzSteps.length);
+    }
+  };
+
+  return (
+    <Container>
+      <h1>Swing Solo Jazz Step Generator</h1>
+      <CheckboxContainer>
+        <label>
+          <input
+            type="checkbox"
+            checked={unique}
+            onChange={handleCheckboxChange}
+          />
+          Unique Steps
+        </label>
+      </CheckboxContainer>
+      <InputContainer>
+        <SmallButton onClick={decrementCount}>-</SmallButton>
+        <Input
+          type="number"
+          value={count}
+          onChange={(e) => setCount(Number(e.target.value))}
+          placeholder="Enter number of steps"
+          max={unique ? jazzSteps.length : undefined}
+        />
+        <SmallButton onClick={incrementCount}>+</SmallButton>
+      </InputContainer>
+      <Button onClick={handleGenerate}>Generate Steps</Button>
+      <StepsContainer>
+        {steps.map((step, index) => (
+          <Step key={index}>{step}</Step>
+        ))}
+      </StepsContainer>
+      <Table>
+        <thead>
+          <tr>
+            <Th>#</Th>
+            <Th>SOLO Step</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {jazzSteps.map((step, index) => (
+            <TableRow key={index} selected={selectedSteps.includes(step)}>
+              <Td>{index + 1}</Td>
+              <Td>{step}</Td>
+            </TableRow>
+          ))}
+        </tbody>
+      </Table>
+    </Container>
+  );
+};
 
 export default IndexPage;
