@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { supabase } from "../supabase";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
   text-align: center;
@@ -163,6 +164,13 @@ const IndexPage = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>Swing Solo Jazz Step Generator</title>
+        <meta
+          name="description"
+          content="Generate solo jazz steps for swing dance practice."
+        />
+      </Helmet>
       <h1>Swing Solo Jazz Step Generator</h1>
       <CheckboxContainer>
         <label>
