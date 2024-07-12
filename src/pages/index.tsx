@@ -1,27 +1,25 @@
-// src/pages/index.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-
-// 一些常見的Solo Jazz步伐
-const jazzSteps = [
-  "Charleston",
-  "Tack Annie",
-  "Shorty George",
-  "Susie Q",
-  "Boogie Back",
-  "Boogie Forward",
-  "Apple Jack",
-  "Fall off the Log",
-  "Shim Sham",
-  "Camel Walk",
-];
-
+import { supabase } from "../supabase";
 
 const IndexPage = () => {
   const [count, setCount] = useState(0);
   const [unique, setUnique] = useState(false);
   const [steps, setSteps] = useState([]);
   const [selectedSteps, setSelectedSteps] = useState([]);
+  const [jazzSteps, setJazzSteps] = useState([]);
+
+  useEffect(() => {
+    const fetchSteps = async () => {
+      const { data, error } = await supabase.from("swing-steps").select("*");
+      if (error) {
+        console.error("Error fetching data from Supabase:", error);
+      } else {
+        setJazzSteps(data.map((step) => step.name));
+      }
+    };
+    fetchSteps();
+  }, []);
 
   const handleGenerate = () => {
     let newSteps;
