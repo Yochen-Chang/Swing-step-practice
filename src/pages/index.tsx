@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { supabase } from "../supabase";
 import { Helmet } from "react-helmet";
+import { navigate } from "gatsby";
 
 const Container = styled.div`
   text-align: center;
@@ -66,6 +67,30 @@ const Button = styled.button`
   }
 `;
 
+const SignUpButton = styled(Button)`
+  background-color: #6c757d;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+`;
+
+const LoginButton = styled(Button)`
+  background-color: #6c757d;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+`;
+
+const LogoutButton = styled(Button)`
+  background-color: #dc3545;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
 const StepsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -114,6 +139,7 @@ const IndexPage = () => {
   const [steps, setSteps] = useState([]);
   const [selectedSteps, setSelectedSteps] = useState([]);
   const [jazzSteps, setJazzSteps] = useState([]);
+  const [username, setUsername] = useState(localStorage.getItem("username"));
 
   useEffect(() => {
     const fetchSteps = async () => {
@@ -162,6 +188,15 @@ const IndexPage = () => {
     }
   };
 
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    setUsername(null);
+  };
+
   return (
     <Container>
       <Helmet>
@@ -172,16 +207,21 @@ const IndexPage = () => {
         />
       </Helmet>
       <h1>Swing Solo Jazz Step Generator</h1>
-      <CheckboxContainer>
-        <label>
-          <input
-            type="checkbox"
-            checked={noRepeated}
-            onChange={handleCheckboxChange}
-          />
-          No repeated
-        </label>
-      </CheckboxContainer>
+      {username ? (
+        <>
+          <p>Welcome, {username}</p>
+          <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+        </>
+      ) : (
+        <>
+          <SignUpButton onClick={() => handleNavigate("/signup")}>
+            Sign Up
+          </SignUpButton>
+          <LoginButton onClick={() => handleNavigate("/login")}>
+            Log In
+          </LoginButton>
+        </>
+      )}
       <InputContainer>
         <SmallButton onClick={decrementCount}>-</SmallButton>
         <Input
@@ -194,6 +234,16 @@ const IndexPage = () => {
         <SmallButton onClick={incrementCount}>+</SmallButton>
       </InputContainer>
       <Button onClick={handleGenerate}>Generate Steps</Button>
+      <CheckboxContainer>
+        <label>
+          <input
+            type="checkbox"
+            checked={noRepeated}
+            onChange={handleCheckboxChange}
+          />
+          No repeated
+        </label>
+      </CheckboxContainer>
       <StepsContainer>
         {steps.map((step, index) => (
           <Step key={index}>{step}</Step>
