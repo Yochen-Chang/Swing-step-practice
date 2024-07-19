@@ -67,22 +67,6 @@ const Button = styled.button`
   }
 `;
 
-const SignUpButton = styled(Button)`
-  background-color: #6c757d;
-
-  &:hover {
-    background-color: #5a6268;
-  }
-`;
-
-const LoginButton = styled(Button)`
-  background-color: #6c757d;
-
-  &:hover {
-    background-color: #5a6268;
-  }
-`;
-
 const LogoutButton = styled(Button)`
   background-color: #dc3545;
 
@@ -156,6 +140,8 @@ const IndexPage = () => {
       const storedUsername = localStorage.getItem("username");
       if (storedUsername) {
         setUsername(storedUsername);
+      } else {
+        navigate("/login");
       }
     }
   }, []);
@@ -195,14 +181,11 @@ const IndexPage = () => {
     }
   };
 
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
-
   const handleLogout = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("username");
       setUsername("");
+      navigate("/login");
     }
   };
 
@@ -216,21 +199,8 @@ const IndexPage = () => {
         />
       </Helmet>
       <h1>Swing Solo Jazz Step Generator</h1>
-      {username ? (
-        <>
-          <p>Welcome, {username}</p>
-          <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
-        </>
-      ) : (
-        <>
-          <SignUpButton onClick={() => handleNavigate("/signup")}>
-            Sign Up
-          </SignUpButton>
-          <LoginButton onClick={() => handleNavigate("/login")}>
-            Log In
-          </LoginButton>
-        </>
-      )}
+      <p>Welcome, {username}</p>
+      <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
       <InputContainer>
         <SmallButton onClick={decrementCount}>-</SmallButton>
         <Input
