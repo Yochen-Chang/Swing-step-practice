@@ -48,7 +48,9 @@ const Signup = () => {
         setMessage("Signup failed: " + error.message);
       } else {
         setMessage("Signup successful! Please log in.");
-        localStorage.setItem("username", username); // Store username in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("username", username); // Store username in localStorage
+        }
         navigate("/");
       }
     } catch (error) {

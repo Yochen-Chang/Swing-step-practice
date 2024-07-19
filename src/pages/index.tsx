@@ -139,7 +139,7 @@ const IndexPage = () => {
   const [steps, setSteps] = useState([]);
   const [selectedSteps, setSelectedSteps] = useState([]);
   const [jazzSteps, setJazzSteps] = useState([]);
-  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const fetchSteps = async () => {
@@ -151,6 +151,13 @@ const IndexPage = () => {
       }
     };
     fetchSteps();
+
+    if (typeof window !== "undefined") {
+      const storedUsername = localStorage.getItem("username");
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
+    }
   }, []);
 
   const handleGenerate = () => {
@@ -193,8 +200,10 @@ const IndexPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("username");
-    setUsername(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("username");
+      setUsername("");
+    }
   };
 
   return (

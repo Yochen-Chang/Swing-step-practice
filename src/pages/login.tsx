@@ -42,7 +42,9 @@ const Login = () => {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
         setMessage("Login successful!");
-        localStorage.setItem("username", username); // Store username in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("username", username); // Store username in localStorage
+        }
         navigate("/");
       } else {
         setMessage("Invalid password.");
