@@ -67,6 +67,19 @@ const Button = styled.button`
   }
 `;
 
+const DeleteButton = styled(Button)`
+  background-color: #dc3545;
+  margin: 0 !important;
+  padding: 0 3px;
+  box-shadow: none;
+  border-radius: 3px;
+  font-weight: bolder;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
 const LogoutButton = styled(Button)`
   background-color: #dc3545;
 
@@ -101,7 +114,7 @@ const Table = styled.table`
 
 const Th = styled.th`
   border: 1px solid #dddddd;
-  text-align: left;
+  text-align: center;
   padding: 8px;
   background-color: #007acc;
   color: white;
@@ -135,6 +148,7 @@ const IndexPage = () => {
   const [noRepeated, setNoRepeated] = useState(false);
   const [steps, setSteps] = useState([]);
   const [selectedSteps, setSelectedSteps] = useState([]);
+  const [newStepName, setNewStepName] = useState("");
   const [jazzSteps, setJazzSteps] = useState([]);
   const [username, setUsername] = useState("");
 
@@ -208,6 +222,10 @@ const IndexPage = () => {
 
   const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
 
+  const deleteStep = (index) => {
+    setJazzSteps((prevSteps) => prevSteps.filter((_, idx) => idx !== index));
+  };
+
   const saveSelectedSteps = async () => {
     const username = localStorage.getItem("username");
     if (username) {
@@ -243,6 +261,16 @@ const IndexPage = () => {
     if (e.target.checked && count > jazzSteps.length) {
       setCount(jazzSteps.length);
     }
+  };
+
+  const addNewStep = () => {
+    if (newStepName.trim() === "") {
+      alert("Please enter a step name.");
+      return;
+    }
+    const newStep = { name: newStepName, checked: true };
+    setJazzSteps((prevSteps) => [...prevSteps, newStep]);
+    setNewStepName(""); // 清空输入框
   };
 
   const handleLogout = () => {
@@ -298,6 +326,7 @@ const IndexPage = () => {
             <Th>#</Th>
             <Th>SOLO Step</Th>
             <Th>Select</Th>
+            <Th>Delete</Th>
           </tr>
         </thead>
         <tbody>
@@ -308,19 +337,39 @@ const IndexPage = () => {
                 (s) => s.name === step.name && s.checked
               )}
             >
-              <Td>{index + 1}</Td>
+              <Td style={{ textAlign: "center" }}>{index + 1}</Td>
               <Td>{step.name}</Td>
-              <Td>
+              <Td style={{ textAlign: "center" }}>
                 <input
+                  style={{ transform: "scale(1.6)" }}
                   type="checkbox"
                   checked={step.checked}
                   onChange={() => handleCheckboxChange(index)}
                 />
               </Td>
+
+              <Td style={{ textAlign: "center" }}>
+                <DeleteButton
+                  onClick={() => deleteStep(index)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Ｘ
+                </DeleteButton>
+              </Td>
             </TableRow>
           ))}
         </tbody>
       </Table>
+      <InputContainer>
+        <Input
+          type="text"
+          value={newStepName}
+          onChange={(e) => setNewStepName(e.target.value)}
+          placeholder="Enter new step name"
+          style={{ height: "18px", fontSize: "16px", padding: "10px" }}
+        />
+        <Button onClick={addNewStep}>Add Step</Button>
+      </InputContainer>
       <Button onClick={saveSelectedSteps}>Save Selected Steps</Button>
     </Container>
   );
