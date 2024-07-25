@@ -127,12 +127,16 @@ const IndexPage = () => {
 
   useEffect(() => {
     const fetchSteps = async () => {
-      const { data, error } = await supabase.from("swing-steps").select("*");
-      if (error) {
-        console.error("Error fetching data from Supabase:", error);
-      } else {
-        setJazzSteps(data.map((step) => step.name));
-      }
+        const { data, error } = await supabase.from("swing-steps").select("*");
+        if (error) {
+            console.error("Error fetching data from Supabase:", error);
+        } else {
+            const stepsWithCheck = data.map((step) => ({
+                name: step.name,
+                checked: true
+            }));
+            setJazzSteps(stepsWithCheck);
+        }
     };
     fetchSteps();
 
@@ -147,21 +151,27 @@ const IndexPage = () => {
   }, []);
 
   const handleGenerate = () => {
-    let newSteps;
+    const selectedSteps = jazzSteps.filter((step) => step.checked);
+    let newSteps = [];
+
     if (noRepeated) {
-      if (count > jazzSteps.length) {
+      if (count > selectedSteps.length) {
         alert("Number of steps requested exceeds available steps.");
         return;
       }
-      newSteps = [...jazzSteps].sort(() => 0.5 - Math.random()).slice(0, count);
+      newSteps = [...selectedSteps]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, count)
+        .map((step) => step.name);
     } else {
       newSteps = Array.from({ length: count }, () => {
-        const randomIndex = Math.floor(Math.random() * jazzSteps.length);
-        return jazzSteps[randomIndex];
+        const randomIndex = Math.floor(Math.random() * selectedSteps.length);
+        return selectedSteps[randomIndex].name;
       });
     }
+
     setSteps(newSteps);
-    setSelectedSteps(newSteps);
+    setSelectedSteps(newSteps.map((name) => ({ name, checked: true }))); // Adjust this if needed
   };
 
   const incrementCount = () => {
@@ -174,7 +184,17 @@ const IndexPage = () => {
 
   const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (index) => {
+    const updatedJazzSteps = jazzSteps.map((step, idx) => {
+      if (idx === index) {
+        return { ...step, checked: !step.checked };
+      }
+      return step;
+    });
+    setJazzSteps(updatedJazzSteps);
+  };
+
+  const handleNoRepeatedChange = (e) => {
     setNoRepeated(e.target.checked);
     if (e.target.checked && count > jazzSteps.length) {
       setCount(jazzSteps.length);
@@ -218,14 +238,14 @@ const IndexPage = () => {
           <input
             type="checkbox"
             checked={noRepeated}
-            onChange={handleCheckboxChange}
+            onChange={handleNoRepeatedChange}
           />
           No repeated
         </label>
       </CheckboxContainer>
       <StepsContainer>
-        {steps.map((step, index) => (
-          <Step key={index}>{step}</Step>
+        {steps.map((stepName, index) => (
+          <Step key={index}>{stepName}</Step>
         ))}
       </StepsContainer>
       <Table>
@@ -233,13 +253,26 @@ const IndexPage = () => {
           <tr>
             <Th>#</Th>
             <Th>SOLO Step</Th>
+            <Th>Select</Th>
           </tr>
         </thead>
         <tbody>
           {jazzSteps.map((step, index) => (
-            <TableRow key={index} selected={selectedSteps.includes(step)}>
+            <TableRow
+              key={index}
+              selected={selectedSteps.some(
+                (s) => s.name === step.name && s.checked
+              )}
+            >
               <Td>{index + 1}</Td>
-              <Td>{step}</Td>
+              <Td>{step.name}</Td>
+              <Td>
+                <input
+                  type="checkbox"
+                  checked={step.checked}
+                  onChange={() => handleCheckboxChange(index)}
+                />
+              </Td>
             </TableRow>
           ))}
         </tbody>
