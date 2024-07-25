@@ -117,6 +117,19 @@ const TableRow = styled.tr`
   background-color: ${(props) => (props.selected ? "#f0e68c" : "white")};
 `;
 
+const defaultJazzSteps = [
+  "Charleston",
+  "Tack Annie",
+  "Shorty George",
+  "Susie Q",
+  "Boogie Back",
+  "Boogie Forward",
+  "Apple Jack",
+  "Fall off the Log",
+  "Stomp",
+  "Camel Walk",
+].map((step) => ({ name: step, checked: true }));
+
 const IndexPage = () => {
   const [count, setCount] = useState(0);
   const [noRepeated, setNoRepeated] = useState(false);
@@ -126,19 +139,30 @@ const IndexPage = () => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const fetchSteps = async () => {
-        const { data, error } = await supabase.from("swing-steps").select("*");
+    const loadSelectedSteps = async () => {
+      const username = localStorage.getItem("username");
+      if (username) {
+        // 假设 username 用作用户识别
+        const { data, error } = await supabase
+          .from("users")
+          .select("selected_steps")
+          .eq("username", username) // 使用 username 而不是 userID
+          .single();
+
         if (error) {
-            console.error("Error fetching data from Supabase:", error);
+          console.error("Error fetching selected steps:", error);
+        } else if (data && data.selected_steps) {
+          setJazzSteps(data.selected_steps);
         } else {
-            const stepsWithCheck = data.map((step) => ({
-                name: step.name,
-                checked: true
-            }));
-            setJazzSteps(stepsWithCheck);
+          // 若未找到保存的数据，则使用默认步骤数据
+          setJazzSteps(defaultJazzSteps);
         }
+      } else {
+        // 如果没有登录信息，则重定向到登录页面或其他操作
+        navigate("/login");
+      }
     };
-    fetchSteps();
+    loadSelectedSteps();
 
     if (typeof window !== "undefined") {
       const storedUsername = localStorage.getItem("username");
@@ -183,6 +207,26 @@ const IndexPage = () => {
   };
 
   const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
+
+  const saveSelectedSteps = async () => {
+    const username = localStorage.getItem("username");
+    if (username) {
+      const { data, error } = await supabase
+        .from("users")
+        .update({ selected_steps: jazzSteps })
+        .eq("username", username);
+
+      if (error) {
+        console.error("Error updating selected steps:", error);
+        alert("Failed to save steps: " + error.message);
+      } else {
+        console.log("Selected steps saved successfully:", data);
+        alert("Steps saved successfully!");
+      }
+    } else {
+      alert("You are not logged in.");
+    }
+  };
 
   const handleCheckboxChange = (index) => {
     const updatedJazzSteps = jazzSteps.map((step, idx) => {
@@ -277,6 +321,7 @@ const IndexPage = () => {
           ))}
         </tbody>
       </Table>
+      <Button onClick={saveSelectedSteps}>Save Selected Steps</Button>
     </Container>
   );
 };
