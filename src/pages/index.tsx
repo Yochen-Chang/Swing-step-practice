@@ -108,7 +108,7 @@ const Step = styled.div`
 const Table = styled.table`
   margin: 20px auto;
   border-collapse: collapse;
-  width: 80%;
+  width: 100%;
   max-width: 400px;
 `;
 
@@ -368,7 +368,7 @@ const IndexPage = () => {
           placeholder="Enter new step name"
           style={{ height: "18px", fontSize: "16px", padding: "10px" }}
         />
-        <Button onClick={addNewStep}>Add Step</Button>
+        <Button onClick={addNewStep}>Add</Button>
       </InputContainer>
       <Button onClick={saveSelectedSteps}>Save Selected Steps</Button>
     </Container>
