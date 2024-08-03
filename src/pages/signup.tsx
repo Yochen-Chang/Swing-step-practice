@@ -1,4 +1,5 @@
 // src/pages/signup.tsx
+
 import React, { useState } from "react";
 import { navigate } from "gatsby";
 import { supabase } from "../supabase";
@@ -18,10 +19,17 @@ const LoginButton = styled(Button)`
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // 新增的狀態
   const [message, setMessage] = useState("");
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 驗證密碼與確認密碼是否一致
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match. Please try again.");
+      return;
+    }
 
     try {
       // Check if the username already exists
@@ -85,6 +93,15 @@ const Signup = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </InputContainer>
+        <InputContainer>
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)} // 新增的輸入欄位
             required
           />
         </InputContainer>
