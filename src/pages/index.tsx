@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { supabase } from "../supabase";
 import { Helmet } from "react-helmet";
 import { navigate } from "gatsby";
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    font-family: 'Arial', sans-serif;
+  }
+`;
 
 const Container = styled.div`
   text-align: center;
@@ -329,108 +336,111 @@ const IndexPage = () => {
     navigate("/signup");
   };
   return (
-    <Container>
-      <Helmet>
-        <title>Swing Solo Jazz Step Generator</title>
-        <meta
-          name="description"
-          content="Generate solo jazz steps for swing dance practice."
-        />
-      </Helmet>
-      <h1>Swing Solo Jazz Step Generator</h1>
-      <p>{username ? "Welcome, " + username + " !!!" : ""}</p>
-      {username ? (
-        <ButtonContainer>
-          <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
-        </ButtonContainer>
-      ) : (
-        <ButtonContainer>
-          <LoginButton onClick={handleLogin}>Log In</LoginButton>
-          <SignUpButton onClick={handleSignUp}>Sign Up</SignUpButton>
-        </ButtonContainer>
-      )}
-      <p style={{ color: "gray" }}>
-        {username ? "" : "*You can record your steps by log in."}
-      </p>
-      <InputContainer>
-        <SmallButton onClick={decrementCount}>-</SmallButton>
-        <Input
-          type="number"
-          value={count}
-          onChange={(e) => setCount(Number(e.target.value))}
-          placeholder="Enter number of steps"
-          max={noRepeated ? jazzSteps.length : undefined}
-        />
-        <SmallButton onClick={incrementCount}>+</SmallButton>
-      </InputContainer>
-      <CheckboxContainer>
-        <Button onClick={handleGenerate}>Generate Steps</Button>
-        <label>
-          <input
-            type="checkbox"
-            checked={noRepeated}
-            onChange={handleNoRepeatedChange}
+    <>
+      <GlobalStyles />
+      <Container>
+        <Helmet>
+          <title>Swing Solo Jazz Step Generator</title>
+          <meta
+            name="description"
+            content="Generate solo jazz steps for swing dance practice."
           />
-          No repeated
-        </label>
-      </CheckboxContainer>
-      <StepsContainer>
-        {steps.map((stepName, index) => (
-          <Step key={index}>{stepName}</Step>
-        ))}
-      </StepsContainer>
-      <Table>
-        <thead>
-          <tr>
-            <Th>#</Th>
-            <Th>SOLO Step</Th>
-            <Th>Select</Th>
-            <Th>Delete</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {jazzSteps.map((step, index) => (
-            <TableRow
-              key={index}
-              selected={selectedSteps.some(
-                (s) => s.name === step.name && s.checked
-              )}
-            >
-              <Td style={{ textAlign: "center" }}>{index + 1}</Td>
-              <Td>{step.name}</Td>
-              <Td style={{ textAlign: "center" }}>
-                <input
-                  style={{ transform: "scale(1.6)" }}
-                  type="checkbox"
-                  checked={step.checked}
-                  onChange={() => handleCheckboxChange(index)}
-                />
-              </Td>
-
-              <Td style={{ textAlign: "center" }}>
-                <DeleteButton
-                  onClick={() => deleteStep(index)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Ｘ
-                </DeleteButton>
-              </Td>
-            </TableRow>
+        </Helmet>
+        <h1>Swing Solo Jazz Step Generator</h1>
+        <p>{username ? "Welcome, " + username + " !!!" : ""}</p>
+        {username ? (
+          <ButtonContainer>
+            <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+          </ButtonContainer>
+        ) : (
+          <ButtonContainer>
+            <LoginButton onClick={handleLogin}>Log In</LoginButton>
+            <SignUpButton onClick={handleSignUp}>Sign Up</SignUpButton>
+          </ButtonContainer>
+        )}
+        <p style={{ color: "gray" }}>
+          {username ? "" : "*You can record your steps by log in."}
+        </p>
+        <InputContainer>
+          <SmallButton onClick={decrementCount}>-</SmallButton>
+          <Input
+            type="number"
+            value={count}
+            onChange={(e) => setCount(Number(e.target.value))}
+            placeholder="Enter number of steps"
+            max={noRepeated ? jazzSteps.length : undefined}
+          />
+          <SmallButton onClick={incrementCount}>+</SmallButton>
+        </InputContainer>
+        <CheckboxContainer>
+          <Button onClick={handleGenerate}>Generate Steps</Button>
+          <label>
+            <input
+              type="checkbox"
+              checked={noRepeated}
+              onChange={handleNoRepeatedChange}
+            />
+            No repeated
+          </label>
+        </CheckboxContainer>
+        <StepsContainer>
+          {steps.map((stepName, index) => (
+            <Step key={index}>{stepName}</Step>
           ))}
-        </tbody>
-      </Table>
-      <InputContainer>
-        <Input
-          type="text"
-          value={newStepName}
-          onChange={(e) => setNewStepName(e.target.value)}
-          placeholder="Enter new step name"
-          style={{ height: "18px", fontSize: "16px", padding: "10px" }}
-        />
-        <Button onClick={addNewStep}>Add</Button>
-      </InputContainer>
-      <Button onClick={saveSelectedSteps}>Save Selected Steps</Button>
-    </Container>
+        </StepsContainer>
+        <Table>
+          <thead>
+            <tr>
+              <Th>#</Th>
+              <Th>SOLO Step</Th>
+              <Th>Select</Th>
+              <Th>Delete</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {jazzSteps.map((step, index) => (
+              <TableRow
+                key={index}
+                selected={selectedSteps.some(
+                  (s) => s.name === step.name && s.checked
+                )}
+              >
+                <Td style={{ textAlign: "center" }}>{index + 1}</Td>
+                <Td>{step.name}</Td>
+                <Td style={{ textAlign: "center" }}>
+                  <input
+                    style={{ transform: "scale(1.6)" }}
+                    type="checkbox"
+                    checked={step.checked}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                </Td>
+
+                <Td style={{ textAlign: "center" }}>
+                  <DeleteButton
+                    onClick={() => deleteStep(index)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Ｘ
+                  </DeleteButton>
+                </Td>
+              </TableRow>
+            ))}
+          </tbody>
+        </Table>
+        <InputContainer>
+          <Input
+            type="text"
+            value={newStepName}
+            onChange={(e) => setNewStepName(e.target.value)}
+            placeholder="Enter new step name"
+            style={{ height: "18px", fontSize: "16px", padding: "10px" }}
+          />
+          <Button onClick={addNewStep}>Add</Button>
+        </InputContainer>
+        <Button onClick={saveSelectedSteps}>Save Selected Steps</Button>
+      </Container>
+    </>
   );
 };
 
