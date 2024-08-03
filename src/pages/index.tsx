@@ -10,7 +10,16 @@ const Container = styled.div`
 `;
 
 const CheckboxContainer = styled.div`
-  margin-bottom: 10px;
+  label {
+    margin-block: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.5);
+  }
 `;
 
 const InputContainer = styled.div`
@@ -54,7 +63,6 @@ const SmallButton = styled.button`
 
 const Button = styled.button`
   padding: 10px 20px;
-  margin: 10px;
   background-color: #007acc;
   font-size: 16px;
   color: white;
@@ -123,7 +131,7 @@ const Th = styled.th`
 const Td = styled.td`
   border: 1px solid #dddddd;
   text-align: left;
-  padding: 8px;
+  padding: 12px;
 `;
 
 const TableRow = styled.tr`
