@@ -105,9 +105,10 @@ const StepsContainer = styled.div`
 
 const Step = styled.div`
   border: 1px solid black;
-  padding: 20px;
-  margin: 10px;
-  width: 150px;
+  padding: 10px;
+  margin: 8px;
+  width: 80%;
+  font-size: 20px;
   text-align: center;
   background-color: #f0f0f0;
   box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 10px;
