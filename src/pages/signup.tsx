@@ -6,9 +6,30 @@ import { supabase } from "../supabase";
 import bcrypt from "bcryptjs";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
-import { Container, InputContainer, Input, Button } from "../sharedStyles";
+import { Container, InputContainer, Input } from "../sharedStyles";
+
+const Button = styled.button`
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  background-color: #4caf50;
+  &:hover {
+    background-color: #388e3c;
+  }
+`;
 
 const LoginButton = styled(Button)`
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   background-color: #6c757d;
 
   &:hover {

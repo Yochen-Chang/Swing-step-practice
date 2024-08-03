@@ -10,8 +10,12 @@ const Container = styled.div`
 `;
 
 const CheckboxContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
   label {
-    margin-block: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,31 +49,39 @@ const Input = styled.input`
 `;
 
 const SmallButton = styled.button`
-  padding: 5px;
+  padding: 10px 20px;
   margin: 5px;
-  background-color: #007acc;
   color: white;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
   width: 50px;
   height: 50px;
   font-size: 20px;
-  box-shadow: rgba(0, 0, 0, 0.5) 3px 3px 5px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
+  background-color: #007acc;
 
   &:hover {
     background-color: #005fa3;
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #007acc;
   font-size: 16px;
   color: white;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 10px;
 
+  background-color: #007acc;
   &:hover {
     background-color: #005fa3;
   }
@@ -96,6 +108,20 @@ const LogoutButton = styled(Button)`
   }
 `;
 
+const LoginButton = styled(Button)`
+  background-color: #2196f3;
+  &:hover {
+    background-color: #1976d2;
+  }
+`;
+
+const SignUpButton = styled(Button)`
+  background-color: #4caf50;
+  &:hover {
+    background-color: #388e3c;
+  }
+`;
+
 const StepsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -104,19 +130,22 @@ const StepsContainer = styled.div`
 `;
 
 const Step = styled.div`
-  border: 1px solid black;
-  padding: 10px;
   margin: 8px;
   width: 80%;
   font-size: 20px;
   text-align: center;
-  background-color: #f0f0f0;
-  box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 10px;
+  background-color: #888888;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
 `;
 
 const Table = styled.table`
   margin: 20px auto;
   border-collapse: collapse;
+  border-radius: 5px;
   width: 100%;
   max-width: 400px;
 `;
@@ -153,7 +182,7 @@ const defaultJazzSteps = [
 ].map((step) => ({ name: step, checked: true }));
 
 const IndexPage = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [noRepeated, setNoRepeated] = useState(false);
   const [steps, setSteps] = useState([]);
   const [selectedSteps, setSelectedSteps] = useState([]);
@@ -182,7 +211,7 @@ const IndexPage = () => {
         }
       } else {
         // 如果没有登录信息，则重定向到登录页面或其他操作
-        navigate("/login");
+          setJazzSteps(defaultJazzSteps);
       }
     };
     loadSelectedSteps();
@@ -192,7 +221,7 @@ const IndexPage = () => {
       if (storedUsername) {
         setUsername(storedUsername);
       } else {
-        navigate("/login");
+        setUsername('');
       }
     }
   }, []);
@@ -222,14 +251,15 @@ const IndexPage = () => {
   };
 
   const incrementCount = () => {
-    if (noRepeated && count >= jazzSteps.length) {
-      alert(`Maximum number of steps is ${jazzSteps.length}`);
+    const selectedSteps = jazzSteps.filter((step) => step.checked);
+    if (noRepeated && count >= selectedSteps.length) {
+      alert(`Maximum number of steps is ${selectedSteps.length}`);
       return;
     }
     setCount(count + 1);
   };
 
-  const decrementCount = () => setCount(count > 0 ? count - 1 : 0);
+  const decrementCount = () => setCount(count > 1 ? count - 1 : 1);
 
   const deleteStep = (index) => {
     setJazzSteps((prevSteps) => prevSteps.filter((_, idx) => idx !== index));
@@ -266,9 +296,10 @@ const IndexPage = () => {
   };
 
   const handleNoRepeatedChange = (e) => {
+    const selectedSteps = jazzSteps.filter((step) => step.checked);
     setNoRepeated(e.target.checked);
-    if (e.target.checked && count > jazzSteps.length) {
-      setCount(jazzSteps.length);
+    if (e.target.checked && count > selectedSteps.length) {
+      setCount(selectedSteps.length);
     }
   };
 
@@ -286,10 +317,17 @@ const IndexPage = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("username");
       setUsername("");
-      navigate("/login");
+      // navigate("/login");
     }
   };
 
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const handleSignUp = () => {
+    navigate("/signup");
+  };
   return (
     <Container>
       <Helmet>
@@ -300,8 +338,20 @@ const IndexPage = () => {
         />
       </Helmet>
       <h1>Swing Solo Jazz Step Generator</h1>
-      <p>Welcome, {username}</p>
-      <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+      <p>{username ? "Welcome, " + username + " !!!" : ""}</p>
+      {username ? (
+        <ButtonContainer>
+          <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+        </ButtonContainer>
+      ) : (
+        <ButtonContainer>
+          <LoginButton onClick={handleLogin}>Log In</LoginButton>
+          <SignUpButton onClick={handleSignUp}>Sign Up</SignUpButton>
+        </ButtonContainer>
+      )}
+      <p style={{ color: "gray" }}>
+        {username ? "" : "*You can record your steps by log in."}
+      </p>
       <InputContainer>
         <SmallButton onClick={decrementCount}>-</SmallButton>
         <Input
@@ -313,8 +363,8 @@ const IndexPage = () => {
         />
         <SmallButton onClick={incrementCount}>+</SmallButton>
       </InputContainer>
-      <Button onClick={handleGenerate}>Generate Steps</Button>
       <CheckboxContainer>
+        <Button onClick={handleGenerate}>Generate Steps</Button>
         <label>
           <input
             type="checkbox"
