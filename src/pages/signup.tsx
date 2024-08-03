@@ -6,7 +6,14 @@ import { supabase } from "../supabase";
 import bcrypt from "bcryptjs";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { Container, InputContainer, Input } from "../sharedStyles";
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    font-family: 'Arial', sans-serif;
+  }
+`;
 
 const Button = styled.button`
   margin: 10px;
@@ -92,47 +99,50 @@ const Signup = () => {
   };
 
   return (
-    <Container>
-      <Helmet>
-        <title>Sign Up</title>
-        <meta name="description" content="Sign up for an account." />
-      </Helmet>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSignup}>
-        <InputContainer>
-          <Input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </InputContainer>
-        <InputContainer>
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </InputContainer>
-        <InputContainer>
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)} // 新增的輸入欄位
-            required
-          />
-        </InputContainer>
-        <Button type="submit">Sign Up</Button>
-        <LoginButton type="button" onClick={handleNavigateLogin}>
-          Go Log In
-        </LoginButton>
-      </form>
-      {message && <p>{message}</p>}
-    </Container>
+    <>
+      <GlobalStyles />
+      <Container>
+        <Helmet>
+          <title>Sign Up</title>
+          <meta name="description" content="Sign up for an account." />
+        </Helmet>
+        <h1>Sign Up</h1>
+        <form onSubmit={handleSignup}>
+          <InputContainer>
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </InputContainer>
+          <InputContainer>
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputContainer>
+          <InputContainer>
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)} // 新增的輸入欄位
+              required
+            />
+          </InputContainer>
+          <Button type="submit">Sign Up</Button>
+          <LoginButton type="button" onClick={handleNavigateLogin}>
+            Go Log In
+          </LoginButton>
+        </form>
+        {message && <p>{message}</p>}
+      </Container>
+    </>
   );
 };
 

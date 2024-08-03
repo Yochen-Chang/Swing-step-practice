@@ -5,7 +5,14 @@ import { supabase } from "../supabase";
 import bcrypt from "bcryptjs";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { Container, InputContainer, Input } from "../sharedStyles";
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    font-family: 'Arial', sans-serif;
+  }
+`;
 
 const Button = styled.button`
   margin: 10px;
@@ -80,38 +87,41 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <Helmet>
-        <title>Login</title>
-        <meta name="description" content="Login to your account." />
-      </Helmet>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <InputContainer>
-          <Input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </InputContainer>
-        <InputContainer>
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </InputContainer>
-        <Button type="submit">Log In</Button>
-        <SignupButton type="button" onClick={handleNavigateSignup}>
-          Go Sign Up
-        </SignupButton>
-      </form>
-      {message && <p>{message}</p>}
-    </Container>
+    <>
+      <GlobalStyles />
+      <Container>
+        <Helmet>
+          <title>Login</title>
+          <meta name="description" content="Login to your account." />
+        </Helmet>
+        <h1>Login</h1>
+        <form onSubmit={handleLogin}>
+          <InputContainer>
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </InputContainer>
+          <InputContainer>
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputContainer>
+          <Button type="submit">Log In</Button>
+          <SignupButton type="button" onClick={handleNavigateSignup}>
+            Go Sign Up
+          </SignupButton>
+        </form>
+        {message && <p>{message}</p>}
+      </Container>
+    </>
   );
 };
 
