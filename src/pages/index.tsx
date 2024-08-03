@@ -137,13 +137,13 @@ const StepsContainer = styled.div`
 `;
 
 const Step = styled.div`
-  margin: 8px;
-  width: 80%;
+  padding: 10px 20px;
+  margin-block: 8px;
+  width: 100%;
+  max-width: 400px;
   font-size: 20px;
   text-align: center;
   background-color: #888888;
-  padding: 10px 20px;
-  font-size: 16px;
   color: white;
   border: none;
   border-radius: 5px;
