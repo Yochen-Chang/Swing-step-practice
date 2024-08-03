@@ -140,7 +140,7 @@ const Step = styled.div`
   padding: 10px 20px;
   margin-block: 8px;
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   font-size: 20px;
   text-align: center;
   background-color: #888888;
