@@ -22,11 +22,12 @@
     "gatsby": "^5.13.5",
     "gatsby-plugin-react-helmet": "^6.13.1",
     "gatsby-plugin-sass": "^6.13.1",
+    "gatsby-plugin-styled-components": "^6.13.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "sass": "^1.77.6",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.12"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
